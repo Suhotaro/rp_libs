@@ -23,6 +23,9 @@ public:
 	void AwakeAll();
 	void DoneAll();
 
+	void showAllIDs() const;
+	void showAllNames() const;
+
 private:
 	int __max_threads;
 	std::map<unsigned int, std::shared_ptr<ThreadControl> > __threads;

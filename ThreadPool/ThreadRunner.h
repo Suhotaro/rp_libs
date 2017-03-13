@@ -23,7 +23,6 @@ public:
 	virtual void Task() = 0;
 
 	std::string getThreadName() const;
-
 private:
 	std::weak_ptr<ThreadControl> __threadControl;
 

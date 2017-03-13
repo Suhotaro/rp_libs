@@ -11,32 +11,65 @@
 #include "ThreadControl.h"
 #include "ThreadPinger.h"
 
-int main()
-{
+void testPinger() {
 	std::shared_ptr<ThreadPool> threadPool = std::make_shared<ThreadPool>();
 	std::shared_ptr<Pinger> pinger = std::make_shared<Pinger>("Pinger", threadPool);
 
-	printf("Statrt\n");
-	//threadPool->StartAll();
+	printf("Pinger: Statrt\n");
 	pinger->Start();
 	std::this_thread::sleep_for(std::chrono::seconds(3));
 
-	printf("Stop\n");
-	//threadPool->StopAll();
+	printf("Pinger: Stop\n");
 	pinger->Stop();
 	std::this_thread::sleep_for(std::chrono::seconds(3));
 
-	printf("Awake\n");
-	//threadPool->AwakeAll();
+	printf("Pinger: Awake\n");
 	pinger->Awake();
 	std::this_thread::sleep_for(std::chrono::seconds(3));
 
-	printf("Done\n");
-	//threadPool->DoneAll();
+	printf("Pinger: Done\n");
 	pinger->Done();
 	std::this_thread::sleep_for(std::chrono::seconds(3));
 
-	printf("Exit\n");
+	threadPool->showAllIDs();
+	threadPool->showAllNames();
+
+	printf("Pinger: Exit\n");
+}
+
+void testPool() {
+	std::shared_ptr<ThreadPool> threadPool = std::make_shared<ThreadPool>();
+	std::shared_ptr<Pinger> pinger = std::make_shared<Pinger>("Pinger1", threadPool);
+	std::shared_ptr<Pinger> pinger2 = std::make_shared<Pinger>("Pinger2", threadPool);
+	std::shared_ptr<Pinger> pinger3 = std::make_shared<Pinger>("Pinger3", threadPool);
+
+	printf("Pool: Statrt\n");
+	threadPool->StartAll();
+	std::this_thread::sleep_for(std::chrono::seconds(3));
+
+	printf("Pool: Stop\n");
+	threadPool->StopAll();	
+	std::this_thread::sleep_for(std::chrono::seconds(3));
+
+	printf("Pool: Awake\n");
+	threadPool->AwakeAll();	
+	std::this_thread::sleep_for(std::chrono::seconds(3));
+
+	printf("Pool: Done\n");
+	threadPool->DoneAll();	
+	std::this_thread::sleep_for(std::chrono::seconds(3));
+
+	threadPool->showAllIDs();
+	threadPool->showAllNames();
+
+	printf("Pool: Exit\n");
+}
+
+int main()
+{
+	//testPinger();
+	testPool();
+
     return 0;
 }
 

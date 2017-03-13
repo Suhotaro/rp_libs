@@ -41,7 +41,6 @@ void ThreadRunner::Stop() {
 		printf("Warining: ThreadRunner::Start: pointer has expired\n");
 }
 
-std::string ThreadRunner::getThreadName() const
-{
+std::string ThreadRunner::getThreadName() const {
 	return __threadName;
 }
