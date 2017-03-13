@@ -24,7 +24,7 @@ public:
 
 	void Task();	
 
-	unsigned int ThreadControl::getID() const;
+	int ThreadControl::getID() const;
 	std::string getRelatedThreadName() const;
 
 private:
@@ -39,8 +39,8 @@ private:
 		DONE,
 	};
 	
-	static unsigned int __InnerCounterOfIDs;
-	unsigned int __threadID;
+	static int __InnerCounterOfIDs;
+	int __threadID;
 	ThreadRunner* __runner;
 
 	std::unique_ptr<ThreadRAII> __threadHolder;

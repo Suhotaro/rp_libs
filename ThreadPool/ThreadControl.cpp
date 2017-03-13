@@ -8,7 +8,7 @@
 
 #include "ThreadControl.h"
 
-unsigned int ThreadControl::__InnerCounterOfIDs = 0;
+int ThreadControl::__InnerCounterOfIDs = 0;
 
 ThreadControl::ThreadControl(ThreadRunner *runner)
 	: __state(State::NONE), __runner(runner) {
@@ -66,7 +66,7 @@ void ThreadControl::WaitUntillStoped() {
 	});
 }
 
-unsigned int ThreadControl::getID() const {
+int ThreadControl::getID() const {
 	return __threadID;
 }
 

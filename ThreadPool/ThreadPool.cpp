@@ -10,8 +10,8 @@ ThreadPool::ThreadPool(int max_threads)
 
 std::weak_ptr<ThreadControl> ThreadPool::createThread(ThreadRunner* runner) {
 	std::shared_ptr<ThreadControl> threadControl = std::make_shared<ThreadControl>(runner);
-	unsigned int threadID = threadControl->getID();
-	__threads.insert(std::pair<unsigned int, std::shared_ptr<ThreadControl> >(threadID, threadControl));
+	int threadID = threadControl->getID();
+	__threads.insert(std::pair<int, std::shared_ptr<ThreadControl> >(threadID, threadControl));
 
 	return threadControl;
 }

@@ -41,7 +41,6 @@ void testPool() {
 	std::shared_ptr<ThreadPool> threadPool = std::make_shared<ThreadPool>();
 	std::shared_ptr<Pinger> pinger = std::make_shared<Pinger>("Pinger1", threadPool);
 	std::shared_ptr<Pinger> pinger2 = std::make_shared<Pinger>("Pinger2", threadPool);
-	std::shared_ptr<Pinger> pinger3 = std::make_shared<Pinger>("Pinger3", threadPool);
 
 	printf("Pool: Statrt\n");
 	threadPool->StartAll();
@@ -61,6 +60,8 @@ void testPool() {
 
 	threadPool->showAllIDs();
 	threadPool->showAllNames();
+
+	printf("Pool: runner2 ID:%d\n", pinger2->getThreadID());
 
 	printf("Pool: Exit\n");
 }

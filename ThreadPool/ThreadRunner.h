@@ -23,10 +23,11 @@ public:
 	virtual void Task() = 0;
 
 	std::string getThreadName() const;
+	int getThreadID() const;
 private:
 	std::weak_ptr<ThreadControl> __threadControl;
 
-	unsigned int ID;
+	int ID;
 	std::string __threadName;
 	std::shared_ptr<ThreadPool> __pool;
 };

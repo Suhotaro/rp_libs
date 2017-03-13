@@ -28,6 +28,6 @@ public:
 
 private:
 	int __max_threads;
-	std::map<unsigned int, std::shared_ptr<ThreadControl> > __threads;
+	std::map<int, std::shared_ptr<ThreadControl> > __threads;
 
 };

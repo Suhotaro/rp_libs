@@ -44,3 +44,12 @@ void ThreadRunner::Stop() {
 std::string ThreadRunner::getThreadName() const {
 	return __threadName;
 }
+
+int ThreadRunner::getThreadID() const {
+	if (auto controller = __threadControl.lock())
+		return controller->getID();
+	else {
+		printf("Warining: ThreadRunner::Start: pointer has expired\n");
+		return -1;
+	}	
+}
