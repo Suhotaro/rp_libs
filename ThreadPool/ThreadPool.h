@@ -16,7 +16,7 @@ public:
 	ThreadPool(int max_threads = MAX_THREADS);
 	~ThreadPool() {};
 
-	std::weak_ptr<ThreadControl> createThread(std::shared_ptr<ThreadRunner> runner);	
+	std::weak_ptr<ThreadControl> createThread(ThreadRunner* runner);
 
 	void StartAll();
 	void StopAll();
@@ -25,6 +25,6 @@ public:
 
 private:
 	int __max_threads;
-	std::map<std::thread::id, std::shared_ptr<ThreadControl> > __threads;
+	std::map<unsigned int, std::shared_ptr<ThreadControl> > __threads;
 
 };

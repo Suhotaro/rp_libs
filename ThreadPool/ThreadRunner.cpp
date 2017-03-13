@@ -6,19 +6,18 @@
 
 ThreadRunner::ThreadRunner(std::string threadName, std::shared_ptr<ThreadPool> pool)
 	: __threadName(threadName), __pool(pool) {
+	if (__pool) {
+		__threadControl = __pool->createThread(this);
+	} else {
+		__threadControl = std::make_shared<ThreadControl>(this);
+	}
 }
 
 void ThreadRunner::Start() {
-
-	if (__pool) {
-		__threadControl = __pool->createThread(shared_from_this());
-	} else {
-		__threadControl = std::make_shared<ThreadControl>(shared_from_this());
-		if (auto controller = __threadControl.lock())
-			controller->Start();
-		else
-			printf("Warining: ThreadRunner::Start: pointer has expired\n");
-	}	
+	if (auto controller = __threadControl.lock())
+		controller->Start();
+	else
+		printf("Warining: ThreadRunner::Start: pointer has expired\n");
 }
 
 void ThreadRunner::Done() {

@@ -15,7 +15,7 @@ class ThreadPool;
 class ThreadControl
 {
 public:
-	explicit ThreadControl(std::shared_ptr<ThreadRunner> runner);
+	explicit ThreadControl(ThreadRunner *runner);
 
 	void Start();
 	void Done();
@@ -24,7 +24,7 @@ public:
 
 	void Task();	
 
-	std::thread::id getID() const;
+	unsigned int ThreadControl::getID() const;
 	std::string getRelatedThreadName() const;
 
 private:
@@ -39,8 +39,9 @@ private:
 		DONE,
 	};
 	
-	std::thread::id __threadID;
-	std::shared_ptr<ThreadRunner> __runner;
+	static unsigned int __InnerCounterOfIDs;
+	unsigned int __threadID;
+	ThreadRunner* __runner;
 
 	std::unique_ptr<ThreadRAII> __threadHolder;
 	std::once_flag __startFlag;

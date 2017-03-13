@@ -8,12 +8,11 @@ ThreadPool::ThreadPool(int max_threads)
 	: __max_threads(max_threads)
 {}
 
-std::weak_ptr<ThreadControl> ThreadPool::createThread(std::shared_ptr<ThreadRunner> runner)
+std::weak_ptr<ThreadControl> ThreadPool::createThread(ThreadRunner* runner)
 {
 	std::shared_ptr<ThreadControl> threadControl = std::make_shared<ThreadControl>(runner);
-	threadControl->Start();
-	std::thread::id threadID = threadControl->getID();
-	__threads.insert(std::pair<std::thread::id, std::shared_ptr<ThreadControl> >(threadID, threadControl));
+	unsigned int threadID = threadControl->getID();
+	__threads.insert(std::pair<unsigned int, std::shared_ptr<ThreadControl> >(threadID, threadControl));
 
 	return threadControl;
 }

@@ -8,31 +8,30 @@
 
 #include "ThreadControl.h"
 
-ThreadControl::ThreadControl(std::shared_ptr<ThreadRunner> runner)
-	: __state(State::NONE), __runner(runner)
-{}
+unsigned int ThreadControl::__InnerCounterOfIDs = 0;
 
-void ThreadControl::Start()
-{
+ThreadControl::ThreadControl(ThreadRunner *runner)
+	: __state(State::NONE), __runner(runner) {
+	__threadID = __InnerCounterOfIDs++;
+}
+
+void ThreadControl::Start() {
 	std::call_once(__startFlag, &ThreadControl::Init, this);
 }
 
-void ThreadControl::Init()
-{
+void ThreadControl::Init() {
 	std::thread executor(&ThreadControl::Task, this);
 	__state = State::RUN;
 	__threadHolder = std::make_unique<ThreadRAII>(std::move(executor), ThreadRAII::DtorAction::join);
 }
 
-void ThreadControl::Done()
-{
+void ThreadControl::Done() {
 	std::lock_guard<std::mutex> guard(__stateMutex);
 	__state = State::DONE;
 	__stateCondVariable.notify_one();
 }
 
-void ThreadControl::Awake()
-{
+void ThreadControl::Awake() {
 	std::lock_guard<std::mutex> guard(__stateMutex);
 	if (__state == State::RUN)
 		return;
@@ -41,8 +40,7 @@ void ThreadControl::Awake()
 	__stateCondVariable.notify_one();
 }
 
-void ThreadControl::Stop()
-{
+void ThreadControl::Stop() {
 	std::lock_guard<std::mutex> guard(__stateMutex);
 	if (__state == State::STOPED)
 		return;
@@ -50,8 +48,7 @@ void ThreadControl::Stop()
 	__state = State::STOPED;
 }
 
-void ThreadControl::Task()
-{
+void ThreadControl::Task() {
 	/* TODO: should it be locked or allow it to make additional 
 	loop before it is stoped */
 	while (__state != State::DONE)
@@ -61,8 +58,7 @@ void ThreadControl::Task()
 	}
 }
 
-void ThreadControl::WaitUntillStoped()
-{
+void ThreadControl::WaitUntillStoped() {
 	std::unique_lock<std::mutex> stateUniqueLock(__stateMutex);
 	__stateCondVariable.wait(stateUniqueLock, [this]()
 	{
@@ -70,13 +66,10 @@ void ThreadControl::WaitUntillStoped()
 	});
 }
 
-std::thread::id ThreadControl::getID() const
-{
-	std::thread& t = __threadHolder->get();
-	return t.get_id();
+unsigned int ThreadControl::getID() const {
+	return __threadID;
 }
 
-std::string ThreadControl::getRelatedThreadName() const
-{
+std::string ThreadControl::getRelatedThreadName() const {
 	return __runner->getThreadName();
 }
