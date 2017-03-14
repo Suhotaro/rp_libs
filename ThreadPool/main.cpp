@@ -37,6 +37,26 @@ void testPinger() {
 	printf("Pinger: Exit\n");
 }
 
+void testReturnRunner() {
+	std::shared_ptr<ThreadPool> threadPool = std::make_shared<ThreadPool>();
+	std::shared_ptr<Pinger> pinger = std::make_shared<Pinger>("Pinger", threadPool);
+	std::shared_ptr<Pinger> pinger2 = std::make_shared<Pinger>("Pinger2", threadPool);
+
+	ThreadRunner *r = threadPool->getRunnerByID(0);
+	printf("Pool: ----------\n");
+	if (r) r->Start();	
+	std::this_thread::sleep_for(std::chrono::seconds(3));
+	if (r) r->Done();
+	printf("Pool: ----------\n");
+
+	printf("Pool: **********\n");
+	ThreadRunner *r2 = threadPool->getRunnerByName(std::string("Pinger2"));
+	if (r2) r2->Start();
+	std::this_thread::sleep_for(std::chrono::seconds(3));
+	if (r2) r2->Done();
+	printf("Pool: **********\n");
+}
+
 void testPool() {
 	std::shared_ptr<ThreadPool> threadPool = std::make_shared<ThreadPool>();
 	std::shared_ptr<Pinger> pinger = std::make_shared<Pinger>("Pinger1", threadPool);
@@ -69,7 +89,8 @@ void testPool() {
 int main()
 {
 	//testPinger();
-	testPool();
+	testReturnRunner();
+	//testPool();
 
     return 0;
 }

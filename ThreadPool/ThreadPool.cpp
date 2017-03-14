@@ -27,7 +27,6 @@ ThreadPool::~ThreadPool() {
 	}
 }
 
-
 void ThreadPool::StartAll() {
 	if (__threads.empty())
 		return;
@@ -91,4 +90,32 @@ void ThreadPool::showAllNames() const
 		std::shared_ptr<ThreadControl> thread = pair.second;
 		printf("Thread name: %s\n", thread->getRelatedThreadName().c_str());
 	}
+}
+
+ThreadRunner* ThreadPool::getRunnerByName(std::string& name)
+{
+	if (!__threads.empty()) {
+		for (auto pair : __threads) {
+			std::shared_ptr<ThreadControl> thread = pair.second;
+			if (!name.compare(thread->getRelatedThreadName()))
+				return thread->getRunner();
+		}
+	}
+
+	return nullptr;
+}
+
+ThreadRunner* ThreadPool::getRunnerByID(unsigned int key)
+{
+	using Pool = std::map<int, std::shared_ptr<ThreadControl> >;
+
+	if (!__threads.empty()) {
+		Pool::iterator it = __threads.find(key);
+		if (it != __threads.end()) {
+			std::shared_ptr<ThreadControl> thread = it->second;
+			return thread->getRunner();
+		}
+	}
+
+	return nullptr;
 }

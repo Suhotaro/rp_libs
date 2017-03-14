@@ -70,6 +70,10 @@ int ThreadControl::getID() const {
 	return __threadID;
 }
 
+ThreadRunner * ThreadControl::getRunner() const {
+	return __runner;
+}
+
 std::string ThreadControl::getRelatedThreadName() const {
 	return __runner->getThreadName();
 }

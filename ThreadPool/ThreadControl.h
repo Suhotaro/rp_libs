@@ -25,6 +25,7 @@ public:
 	void Task();	
 
 	int ThreadControl::getID() const;
+	ThreadRunner * ThreadControl::getRunner() const;
 	std::string getRelatedThreadName() const;
 
 private:

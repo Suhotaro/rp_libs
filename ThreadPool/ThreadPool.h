@@ -26,6 +26,10 @@ public:
 	void showAllIDs() const;
 	void showAllNames() const;
 
+	/* TODO: duplicated strings */
+	ThreadRunner* getRunnerByName(std::string&);
+	ThreadRunner* getRunnerByID(unsigned int);
+
 private:
 	int __max_threads;
 	std::map<int, std::shared_ptr<ThreadControl> > __threads;
