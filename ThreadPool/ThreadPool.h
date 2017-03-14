@@ -14,7 +14,7 @@ class ThreadPool
 {
 public:
 	ThreadPool(int max_threads = MAX_THREADS);
-	~ThreadPool() {};
+	~ThreadPool();
 
 	std::weak_ptr<ThreadControl> createThread(ThreadRunner* runner);
 

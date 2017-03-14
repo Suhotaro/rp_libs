@@ -16,6 +16,18 @@ std::weak_ptr<ThreadControl> ThreadPool::createThread(ThreadRunner* runner) {
 	return threadControl;
 }
 
+ThreadPool::~ThreadPool() {  
+	if (!__threads.empty()) {
+		for (auto pair : __threads) {
+			std::shared_ptr<ThreadControl> thread = pair.second;
+			/* TODO: should add features like wait untill a thread is closed for certain time and
+			force to destoy it if the thread is locked */
+			thread->Done();
+		}
+	}
+}
+
+
 void ThreadPool::StartAll() {
 	if (__threads.empty())
 		return;
