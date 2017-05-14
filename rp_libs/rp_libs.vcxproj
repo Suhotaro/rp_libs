@@ -149,8 +149,11 @@
     <Text Include="ReadMe.txt" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="CyclicBuffer.h" />
     <ClInclude Include="Msg.h" />
+    <ClInclude Include="NetUtil.h" />
     <ClInclude Include="rp_libs.h" />
+    <ClInclude Include="Selector.h" />
     <ClInclude Include="Socket.h" />
     <ClInclude Include="SocketTCP.h" />
     <ClInclude Include="stdafx.h" />
@@ -163,6 +166,7 @@
     <ClInclude Include="ThreadSafeQueue.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="CyclicBuffer.cpp" />
     <ClCompile Include="dllmain.cpp">
       <CompileAsManaged Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">false</CompileAsManaged>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
@@ -178,6 +182,7 @@
       </PrecompiledHeader>
     </ClCompile>
     <ClCompile Include="rp_libs.cpp" />
+    <ClCompile Include="Selector.cpp" />
     <ClCompile Include="Socket.cpp" />
     <ClCompile Include="SocketTCP.cpp" />
     <ClCompile Include="stdafx.cpp">

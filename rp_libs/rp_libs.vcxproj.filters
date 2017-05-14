@@ -1,117 +1,118 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
-    <Filter Include="Source Files">
-      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
-      <Extensions>cpp;c;cc;cxx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    <Filter Include="src">
+      <UniqueIdentifier>{926cac8f-89a2-4687-9e8e-b0b4caecfa25}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Header Files">
+    <Filter Include="src\data_structures">
+      <UniqueIdentifier>{98566c38-1a5d-4579-bad8-ef8cdd7a3eec}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\net">
+      <UniqueIdentifier>{56f0393e-6df5-40f9-936a-ed97ba9134f3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\thread">
+      <UniqueIdentifier>{5cf36ca7-a791-45f2-87a3-be7e47a77068}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="lib">
       <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
       <Extensions>h;hh;hpp;hxx;hm;inl;inc;xsd</Extensions>
     </Filter>
-    <Filter Include="Resource Files">
+    <Filter Include="resources">
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
-    <Filter Include="Source Files\Threads">
-      <UniqueIdentifier>{3cd50b87-f60c-4573-a454-ca3975887b53}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Header Files\Threads">
-      <UniqueIdentifier>{9453f6ea-f839-4a75-96bf-5e2c22944a9c}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Header Files\Threads\Pool">
-      <UniqueIdentifier>{e0ec13c9-6c19-4dee-bfc1-934d6759ee81}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Source Files\Threads\Pool">
-      <UniqueIdentifier>{0112b503-c2a9-4861-b066-163df5620c50}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Header Files\Net">
-      <UniqueIdentifier>{485aa4ad-fd09-485e-8cd9-0696df5a1db4}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Source Files\Net">
-      <UniqueIdentifier>{f1b83e82-e046-4868-8bb4-fce9f0cb9f3c}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Source Files\DataStructures">
-      <UniqueIdentifier>{7a1e4bb3-de0c-42df-b36a-0f5055e5e211}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Header Files\DataStructures">
-      <UniqueIdentifier>{5f679722-1a1d-42fb-b60a-8a17561709a0}</UniqueIdentifier>
-    </Filter>
-  </ItemGroup>
-  <ItemGroup>
-    <Text Include="ReadMe.txt" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="stdafx.h">
-      <Filter>Header Files</Filter>
+      <Filter>lib</Filter>
     </ClInclude>
     <ClInclude Include="targetver.h">
-      <Filter>Header Files</Filter>
+      <Filter>lib</Filter>
     </ClInclude>
     <ClInclude Include="rp_libs.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="ThreadControl.h">
-      <Filter>Header Files\Threads\Pool</Filter>
-    </ClInclude>
-    <ClInclude Include="ThreadPinger.h">
-      <Filter>Header Files\Threads\Pool</Filter>
-    </ClInclude>
-    <ClInclude Include="ThreadPool.h">
-      <Filter>Header Files\Threads\Pool</Filter>
-    </ClInclude>
-    <ClInclude Include="ThreadRAII.h">
-      <Filter>Header Files\Threads\Pool</Filter>
-    </ClInclude>
-    <ClInclude Include="ThreadRunner.h">
-      <Filter>Header Files\Threads\Pool</Filter>
+      <Filter>lib</Filter>
     </ClInclude>
     <ClInclude Include="ThreadSafeQueue.h">
-      <Filter>Header Files\DataStructures</Filter>
-    </ClInclude>
-    <ClInclude Include="Socket.h">
-      <Filter>Header Files\Net</Filter>
-    </ClInclude>
-    <ClInclude Include="SocketTCP.h">
-      <Filter>Header Files\Net</Filter>
+      <Filter>src\data_structures</Filter>
     </ClInclude>
     <ClInclude Include="Msg.h">
-      <Filter>Header Files\Net</Filter>
+      <Filter>src\net</Filter>
+    </ClInclude>
+    <ClInclude Include="SocketTCP.h">
+      <Filter>src\net</Filter>
+    </ClInclude>
+    <ClInclude Include="Socket.h">
+      <Filter>src\net</Filter>
+    </ClInclude>
+    <ClInclude Include="ThreadControl.h">
+      <Filter>src\thread</Filter>
+    </ClInclude>
+    <ClInclude Include="ThreadPinger.h">
+      <Filter>src\thread</Filter>
+    </ClInclude>
+    <ClInclude Include="ThreadPool.h">
+      <Filter>src\thread</Filter>
+    </ClInclude>
+    <ClInclude Include="ThreadRAII.h">
+      <Filter>src\thread</Filter>
+    </ClInclude>
+    <ClInclude Include="ThreadRunner.h">
+      <Filter>src\thread</Filter>
+    </ClInclude>
+    <ClInclude Include="Selector.h">
+      <Filter>src\net</Filter>
+    </ClInclude>
+    <ClInclude Include="NetUtil.h">
+      <Filter>src\net</Filter>
+    </ClInclude>
+    <ClInclude Include="CyclicBuffer.h">
+      <Filter>src\data_structures</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="stdafx.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="rp_libs.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="dllmain.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="ThreadControl.cpp">
-      <Filter>Source Files\Threads\Pool</Filter>
-    </ClCompile>
-    <ClCompile Include="ThreadPinger.cpp">
-      <Filter>Source Files\Threads\Pool</Filter>
-    </ClCompile>
-    <ClCompile Include="ThreadPool.cpp">
-      <Filter>Source Files\Threads\Pool</Filter>
-    </ClCompile>
-    <ClCompile Include="ThreadRAII.cpp">
-      <Filter>Source Files\Threads\Pool</Filter>
-    </ClCompile>
-    <ClCompile Include="ThreadRunner.cpp">
-      <Filter>Source Files\Threads\Pool</Filter>
-    </ClCompile>
     <ClCompile Include="ThreadSafeQueue.cpp">
-      <Filter>Source Files\DataStructures</Filter>
+      <Filter>src\data_structures</Filter>
     </ClCompile>
     <ClCompile Include="Socket.cpp">
-      <Filter>Source Files\Net</Filter>
+      <Filter>src\net</Filter>
     </ClCompile>
     <ClCompile Include="SocketTCP.cpp">
-      <Filter>Source Files\Net</Filter>
+      <Filter>src\net</Filter>
     </ClCompile>
+    <ClCompile Include="ThreadControl.cpp">
+      <Filter>src\thread</Filter>
+    </ClCompile>
+    <ClCompile Include="ThreadPinger.cpp">
+      <Filter>src\thread</Filter>
+    </ClCompile>
+    <ClCompile Include="ThreadPool.cpp">
+      <Filter>src\thread</Filter>
+    </ClCompile>
+    <ClCompile Include="ThreadRAII.cpp">
+      <Filter>src\thread</Filter>
+    </ClCompile>
+    <ClCompile Include="ThreadRunner.cpp">
+      <Filter>src\thread</Filter>
+    </ClCompile>
+    <ClCompile Include="dllmain.cpp">
+      <Filter>lib</Filter>
+    </ClCompile>
+    <ClCompile Include="rp_libs.cpp">
+      <Filter>lib</Filter>
+    </ClCompile>
+    <ClCompile Include="stdafx.cpp">
+      <Filter>lib</Filter>
+    </ClCompile>
+    <ClCompile Include="Selector.cpp">
+      <Filter>src\net</Filter>
+    </ClCompile>
+    <ClCompile Include="CyclicBuffer.cpp">
+      <Filter>src\data_structures</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <Text Include="ReadMe.txt">
+      <Filter>lib</Filter>
+    </Text>
   </ItemGroup>
 </Project>

@@ -1,4 +1,5 @@
 #include "Selector.h"
+#include "CyclicBuffer.h"
 #include "SocketTCP.h"
 
 #include <stdio.h>
