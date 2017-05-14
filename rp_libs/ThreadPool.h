@@ -2,6 +2,9 @@
 
 #include <memory>
 #include <map>
+
+#include "rp_libs.h"
+
 #include "ThreadControl.h"
 #include "ThreadRunner.h"
 
@@ -10,7 +13,7 @@ static const int MAX_THREADS = 10;
 class ThreadControl;
 class ThreadRunner;
 
-class ThreadPool
+class RP_LIBS_API ThreadPool
 {
 public:
 	ThreadPool(int max_threads = MAX_THREADS);

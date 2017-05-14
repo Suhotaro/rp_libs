@@ -3,7 +3,8 @@
 #include <string>
 #include <thread>
 
-#include "ThreadControl.h"
+#include "ThreadRunner.h"
+#include "ThreadPool.h"
 
 class Pinger : public ThreadRunner
 {

@@ -4,7 +4,6 @@
 #include <thread>
 #include <chrono>
 
-#include "ThreadControl.h"
 #include "ThreadPinger.h"
 
 

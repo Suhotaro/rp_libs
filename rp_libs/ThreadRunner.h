@@ -1,13 +1,16 @@
 #pragma once
 
 #include <memory>
+
+#include "rp_libs.h"
+
 #include "ThreadControl.h"
 #include "ThreadPool.h"
 
 class ThreadPool;
 class ThreadControl;
 
-class ThreadRunner : std::enable_shared_from_this<ThreadRunner>
+class RP_LIBS_API ThreadRunner
 {
 public:
 	ThreadRunner(std::string threadName, std::shared_ptr<ThreadPool> pool);
@@ -27,7 +30,6 @@ public:
 private:
 	std::weak_ptr<ThreadControl> __threadControl;
 
-	int ID;
 	std::string __threadName;
 	std::shared_ptr<ThreadPool> __pool;
 };
