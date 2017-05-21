@@ -2,24 +2,19 @@
 
 #include "Socket.h"
 
-class CyclicBuffer;
-
 class rpSelector
 {
 public:
-	rpSelector(CyclicBuffer *inBuf, CyclicBuffer *outBuf);
-	~rpSelector();
+	rpSelector() {}
+	~rpSelector() {}
 
-	bool Init();
-	void Update();
-	int Errors();
+	virtual bool Init() = 0;
+	virtual void Done() = 0;
+	virtual bool Update() = 0;
+	virtual int Errors() = 0;
 
 protected:
-	rpSocket *__socket;
-	CyclicBuffer *__inBuf;
-	CyclicBuffer *__outBuf;
-
-	fd_set fdread;
-	fd_set fdwrite;
-	int ret;
+	virtual void OnRead(char *__buffer, int __size) {}
+	virtual void OnWrite(char *__buffer, int *__size) {}
+	virtual void OnClose() {}
 };

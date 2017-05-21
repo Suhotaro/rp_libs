@@ -12,7 +12,7 @@ rpSocketBase::~rpSocketBase() {
 	closesocket(__socket);
 }
 
-SOCKET& rpSocketBase::Socket() {
+SOCKET& rpSocketBase::Handle() {
 	return __socket; 
 }
 

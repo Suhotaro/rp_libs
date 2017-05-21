@@ -15,7 +15,7 @@ rpTCPClientSocket::rpTCPClientSocket(std::string address, int port,
 bool rpTCPClientSocket::Init()
 {
 	__socket = socket(AF_INET, SOCK_STREAM, IPPROTO_IP);
-	NETRETVALIFTRUE(!__socket, false, "create socket");
+	NETRETVALIFFALSE(__socket, false, "create socket");
 
 	struct sockaddr_in server;
 	memset(&server, 0, sizeof(struct sockaddr_in));
@@ -26,14 +26,14 @@ bool rpTCPClientSocket::Init()
 	if (server.sin_addr.S_un.S_addr == INADDR_NONE)
 	{
 		struct hostent *host = gethostbyname(__address.c_str());
-		NETRETVALIFTRUE(!host, false, "resolve server %s", __address.c_str());
+		NETRETVALIFFALSE(host, false, "resolve server %s", __address.c_str());
 
 		//$todo: iterate through all
 		CopyMemory(&server.sin_addr, host->h_addr_list[0], host->h_length);
 	}
 
 	int ret = connect(__socket, (struct sockaddr *)&server, sizeof(server));
-	NETRETVALIFTRUE(ret == SOCKET_ERROR, false, "connect to server %s", __address.c_str());
+	NETRETVALIFFALSE(ret != SOCKET_ERROR, false, "connect to server %s", __address.c_str());
 
 	return true;
 }

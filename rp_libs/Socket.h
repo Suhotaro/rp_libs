@@ -15,7 +15,7 @@ public:
 	rpSocketBase(SOCKET socket);
 	~rpSocketBase();
 
-	SOCKET& Socket();
+	SOCKET& Handle();
 };
 
 class RP_LIBS_API rpSocket : public rpSocketBase

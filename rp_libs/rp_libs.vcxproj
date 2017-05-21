@@ -154,6 +154,7 @@
     <ClInclude Include="NetUtil.h" />
     <ClInclude Include="rp_libs.h" />
     <ClInclude Include="Selector.h" />
+    <ClInclude Include="SelectorClient.h" />
     <ClInclude Include="Socket.h" />
     <ClInclude Include="SocketTCP.h" />
     <ClInclude Include="stdafx.h" />
@@ -164,6 +165,7 @@
     <ClInclude Include="ThreadRAII.h" />
     <ClInclude Include="ThreadRunner.h" />
     <ClInclude Include="ThreadSafeQueue.h" />
+    <ClInclude Include="Util.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="CyclicBuffer.cpp" />
@@ -183,6 +185,7 @@
     </ClCompile>
     <ClCompile Include="rp_libs.cpp" />
     <ClCompile Include="Selector.cpp" />
+    <ClCompile Include="SelectorClient.cpp" />
     <ClCompile Include="Socket.cpp" />
     <ClCompile Include="SocketTCP.cpp" />
     <ClCompile Include="stdafx.cpp">
