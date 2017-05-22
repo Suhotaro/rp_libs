@@ -20,8 +20,8 @@ public:
 	virtual int Errors() override;
 
 protected:
-	virtual void OnRead(char *__buffer, int __size) override;
-	virtual void OnWrite(char *__buffer, int *__size) override;
+	virtual void OnRead(char *buffer, int size) override;
+	virtual void OnWrite(char *buffer, int *size) override;
 	virtual void OnClose() override;
 
 	//Correct return value has to be returned to left Update properly

@@ -42,6 +42,7 @@ bool rpSelectorClient::Init()
 	RETURNVALIFFALSE(__signalSocket, false, "WSACreateEvent failed");
 
 	ret = WSAEventSelect(__socket->Handle(), __signalSocket, __flags);
+	//TODO: there might be an error
 	NETRETVALIFFALSE(ret != SOCKET_ERROR, "WSAEventSelect failed");
 
 	events.push_back(__signalSocket);
@@ -59,7 +60,6 @@ void rpSelectorClient::Done()
 bool rpSelectorClient::Update()
 {
 	DWORD Index;
-
 
 	while (true)
 	{
@@ -130,7 +130,7 @@ bool rpSelectorClient::processEventSocket(WSAEVENT event)
 		else
 			OnRead(__buffer, data_read);
 	}
-	else if (NetworkEvents.lNetworkEvents && FD_WRITE)
+	if (NetworkEvents.lNetworkEvents && FD_WRITE)
 	{
 		if (NetworkEvents.iErrorCode[FD_WRITE_BIT] != 0)
 		{
@@ -141,7 +141,7 @@ bool rpSelectorClient::processEventSocket(WSAEVENT event)
 
 		//TODO: is required
 	}
-	else if (NetworkEvents.lNetworkEvents && FD_OOB)
+	if (NetworkEvents.lNetworkEvents && FD_OOB)
 	{
 		if (NetworkEvents.iErrorCode[FD_OOB_BIT] != 0)
 		{
@@ -152,7 +152,7 @@ bool rpSelectorClient::processEventSocket(WSAEVENT event)
 
 		//TODO: is required
 	}
-	else if (NetworkEvents.lNetworkEvents && FD_ACCEPT)
+	if (NetworkEvents.lNetworkEvents && FD_ACCEPT)
 	{
 		if (NetworkEvents.iErrorCode[FD_ACCEPT_BIT] != 0)
 		{
@@ -163,7 +163,7 @@ bool rpSelectorClient::processEventSocket(WSAEVENT event)
 
 		//TODO: is required
 	}
-	else if (NetworkEvents.lNetworkEvents && FD_CONNECT)
+	if (NetworkEvents.lNetworkEvents && FD_CONNECT)
 	{
 		if (NetworkEvents.iErrorCode[FD_CONNECT_BIT] != 0)
 		{
@@ -174,7 +174,7 @@ bool rpSelectorClient::processEventSocket(WSAEVENT event)
 
 		//TODO: is required
 	}
-	else if (NetworkEvents.lNetworkEvents && FD_QOS)
+	if (NetworkEvents.lNetworkEvents && FD_QOS)
 	{
 		if (NetworkEvents.iErrorCode[FD_QOS_BIT] != 0)
 		{
@@ -185,7 +185,7 @@ bool rpSelectorClient::processEventSocket(WSAEVENT event)
 
 		//TODO: is required
 	}
-	else if (NetworkEvents.lNetworkEvents && FD_GROUP_QOS)
+	if (NetworkEvents.lNetworkEvents && FD_GROUP_QOS)
 	{
 		if (NetworkEvents.iErrorCode[FD_GROUP_QOS_BIT] != 0)
 		{
@@ -196,7 +196,7 @@ bool rpSelectorClient::processEventSocket(WSAEVENT event)
 
 		//TODO: is required
 	}
-	else if (NetworkEvents.lNetworkEvents && FD_ROUTING_INTERFACE_CHANGE)
+	if (NetworkEvents.lNetworkEvents && FD_ROUTING_INTERFACE_CHANGE)
 	{
 		if (NetworkEvents.iErrorCode[FD_ROUTING_INTERFACE_CHANGE_BIT] != 0)
 		{
@@ -207,7 +207,7 @@ bool rpSelectorClient::processEventSocket(WSAEVENT event)
 
 		//TODO: is required
 	}
-	else if (NetworkEvents.lNetworkEvents && FD_ADDRESS_LIST_CHANGE)
+	if (NetworkEvents.lNetworkEvents && FD_ADDRESS_LIST_CHANGE)
 	{
 		if (NetworkEvents.iErrorCode[FD_ADDRESS_LIST_CHANGE_BIT] != 0)
 		{
@@ -218,7 +218,7 @@ bool rpSelectorClient::processEventSocket(WSAEVENT event)
 
 		//TODO: is required
 	}
-	else if (NetworkEvents.lNetworkEvents && FD_CONNECT)
+	if (NetworkEvents.lNetworkEvents && FD_CONNECT)
 	{
 		if (NetworkEvents.iErrorCode[FD_CONNECT_BIT] != 0)
 		{
@@ -229,7 +229,7 @@ bool rpSelectorClient::processEventSocket(WSAEVENT event)
 
 		//TODO: is required
 	}
-	else if (NetworkEvents.lNetworkEvents && FD_CLOSE)
+	if (NetworkEvents.lNetworkEvents && FD_CLOSE)
 	{
 		if (NetworkEvents.iErrorCode[FD_CLOSE_BIT] != 0)
 		{
@@ -264,14 +264,14 @@ bool rpSelectorClient::processEventDataToWrite(WSAEVENT event)
 	return true;
 }
 
-void rpSelectorClient::OnRead(char *__buffer, int __size)
+void rpSelectorClient::OnRead(char *buffer, int size)
 {
-
+	__inBuf->Add(buffer, size);
 }
 
-void rpSelectorClient::OnWrite(char *__buffer, int *__size)
+void rpSelectorClient::OnWrite(char *buffer, int *size)
 {
-
+	__outBuf->Pop(buffer, size, __size);
 }
 
 void rpSelectorClient::OnClose()
