@@ -42,8 +42,7 @@ bool rpSelectorClient::Init()
 	RETURNVALIFFALSE(__signalSocket, false, "WSACreateEvent failed");
 
 	ret = WSAEventSelect(__socket->Handle(), __signalSocket, __flags);
-	//TODO: there might be an error
-	NETRETVALIFFALSE(ret != SOCKET_ERROR, "WSAEventSelect failed");
+	NETRETVALIFFALSE(ret != (int)SOCKET_ERROR, "WSAEventSelect failed");
 
 	events.push_back(__signalSocket);
 	events.push_back(__signalDone);
@@ -99,6 +98,8 @@ bool rpSelectorClient::Update()
 			printf("ERROR: unknown event\n");
 			return false;
 		}
+
+		WSAResetEvent(event);
 	}
 
 	return true;
@@ -130,105 +131,6 @@ bool rpSelectorClient::processEventSocket(WSAEVENT event)
 		else
 			OnRead(__buffer, data_read);
 	}
-	if (NetworkEvents.lNetworkEvents && FD_WRITE)
-	{
-		if (NetworkEvents.iErrorCode[FD_WRITE_BIT] != 0)
-		{
-			printf("FD_WRITE: failed with error: %d\n",
-				NetworkEvents.iErrorCode[FD_WRITE_BIT]);
-			return false;
-		}
-
-		//TODO: is required
-	}
-	if (NetworkEvents.lNetworkEvents && FD_OOB)
-	{
-		if (NetworkEvents.iErrorCode[FD_OOB_BIT] != 0)
-		{
-			printf("FD_OOB: failed with error: %d\n",
-				NetworkEvents.iErrorCode[FD_OOB_BIT]);
-			return false;
-		}
-
-		//TODO: is required
-	}
-	if (NetworkEvents.lNetworkEvents && FD_ACCEPT)
-	{
-		if (NetworkEvents.iErrorCode[FD_ACCEPT_BIT] != 0)
-		{
-			printf("FD_ACCEPT: failed with error: %d\n",
-				NetworkEvents.iErrorCode[FD_ACCEPT_BIT]);
-			return false;
-		}
-
-		//TODO: is required
-	}
-	if (NetworkEvents.lNetworkEvents && FD_CONNECT)
-	{
-		if (NetworkEvents.iErrorCode[FD_CONNECT_BIT] != 0)
-		{
-			printf("FD_CONNECT: failed with error: %d\n",
-				NetworkEvents.iErrorCode[FD_CONNECT_BIT]);
-			return false;
-		}
-
-		//TODO: is required
-	}
-	if (NetworkEvents.lNetworkEvents && FD_QOS)
-	{
-		if (NetworkEvents.iErrorCode[FD_QOS_BIT] != 0)
-		{
-			printf("FD_CONNECT: failed with error: %d\n",
-				NetworkEvents.iErrorCode[FD_QOS_BIT]);
-			return false;
-		}
-
-		//TODO: is required
-	}
-	if (NetworkEvents.lNetworkEvents && FD_GROUP_QOS)
-	{
-		if (NetworkEvents.iErrorCode[FD_GROUP_QOS_BIT] != 0)
-		{
-			printf("FD_CONNECT: failed with error: %d\n",
-				NetworkEvents.iErrorCode[FD_GROUP_QOS_BIT]);
-			return false;
-		}
-
-		//TODO: is required
-	}
-	if (NetworkEvents.lNetworkEvents && FD_ROUTING_INTERFACE_CHANGE)
-	{
-		if (NetworkEvents.iErrorCode[FD_ROUTING_INTERFACE_CHANGE_BIT] != 0)
-		{
-			printf("FD_CONNECT: failed with error: %d\n",
-				NetworkEvents.iErrorCode[FD_ROUTING_INTERFACE_CHANGE_BIT]);
-			return false;
-		}
-
-		//TODO: is required
-	}
-	if (NetworkEvents.lNetworkEvents && FD_ADDRESS_LIST_CHANGE)
-	{
-		if (NetworkEvents.iErrorCode[FD_ADDRESS_LIST_CHANGE_BIT] != 0)
-		{
-			printf("FD_CONNECT: failed with error: %d\n",
-				NetworkEvents.iErrorCode[FD_ADDRESS_LIST_CHANGE_BIT]);
-			return false;
-		}
-
-		//TODO: is required
-	}
-	if (NetworkEvents.lNetworkEvents && FD_CONNECT)
-	{
-		if (NetworkEvents.iErrorCode[FD_CONNECT_BIT] != 0)
-		{
-			printf("FD_CONNECT: failed with error: %d\n",
-				NetworkEvents.iErrorCode[FD_CONNECT_BIT]);
-			return false;
-		}
-
-		//TODO: is required
-	}
 	if (NetworkEvents.lNetworkEvents && FD_CLOSE)
 	{
 		if (NetworkEvents.iErrorCode[FD_CLOSE_BIT] != 0)
@@ -240,7 +142,18 @@ bool rpSelectorClient::processEventSocket(WSAEVENT event)
 
 		closesocket(__socket->Handle());
 	}
-
+	if (NetworkEvents.lNetworkEvents && FD_WRITE
+		|| NetworkEvents.lNetworkEvents && FD_OOB
+		|| NetworkEvents.lNetworkEvents && FD_ACCEPT
+		|| NetworkEvents.lNetworkEvents && FD_CONNECT
+		|| NetworkEvents.lNetworkEvents && FD_QOS
+		|| NetworkEvents.lNetworkEvents && FD_GROUP_QOS
+		|| NetworkEvents.lNetworkEvents && FD_ROUTING_INTERFACE_CHANGE
+		|| NetworkEvents.lNetworkEvents && FD_ADDRESS_LIST_CHANGE]
+		|| NetworkEvents.lNetworkEvents && FD_CONNECT)
+	{
+		//TODO: implement if required
+	}
 	return true;
 }
 

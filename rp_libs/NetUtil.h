@@ -9,7 +9,7 @@ if (statement)															\
 }
 
 #define NETRETVALIFFALSE(statement, ret, msg, ...)						\
-if (!statement)															\
+if (!(statement))														\
 {																		\
 	printf("[ERROR][%s:%d][%d] " msg "\n",								\
 			__FUNCTION__, __LINE__, WSAGetLastError(), ##__VA_ARGS__);	\
@@ -17,7 +17,7 @@ if (!statement)															\
 }
 
 #define NETEXITIFFALSE(statement, msg, ...)						\
-if (!statement)													\
+if (!(statement))												\
 {																\
 	printf("[ERROR][%s:%d][%d] " msg "\n",						\
 	__FUNCTION__, __LINE__, WSAGetLastError(), ##__VA_ARGS__);	\
