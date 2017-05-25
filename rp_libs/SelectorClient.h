@@ -4,6 +4,7 @@
 #include "Selector.h"
 
 #include <vector>
+#include <string>
 
 class CyclicBuffer;
 
@@ -11,7 +12,7 @@ class rpSelectorClient : public rpSelector
 {
 	typedef rpSelector eInherited;
 public:
-	rpSelectorClient(CyclicBuffer *inBuf, CyclicBuffer *outBuf, int flags);
+	rpSelectorClient(std::string address, int port, CyclicBuffer *inBuf, CyclicBuffer *outBuf, int flags);
 	~rpSelectorClient();
 
 	virtual bool Init() override;
@@ -29,7 +30,10 @@ protected:
 	bool processEventDone(WSAEVENT event);
 	bool processEventDataToWrite(WSAEVENT event);
 
+	std::string __address;
+	int __port;
 	rpSocket *__socket;
+
 	HANDLE __signalSocket;
 	HANDLE __signalDone;
 

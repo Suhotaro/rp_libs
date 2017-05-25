@@ -9,13 +9,17 @@
 
 #define BUFF_SIZE 4096
 
-rpSelectorClient::rpSelectorClient(CyclicBuffer *inBuf, CyclicBuffer *outBuf, int flags)
+rpSelectorClient::rpSelectorClient(std::string address, int port, CyclicBuffer *inBuf, CyclicBuffer *outBuf, int flags)
 : eInherited(),
+__address(address),
+__port(port),
 __inBuf(inBuf),
 __outBuf(outBuf),
 __flags(flags),
 __size(BUFF_SIZE)
-{}
+{
+
+}
 
 rpSelectorClient::~rpSelectorClient()
 {
@@ -25,6 +29,9 @@ rpSelectorClient::~rpSelectorClient()
 
 bool rpSelectorClient::Init()
 {
+	__socket = new rpTCPClientSocket(__address, __port);
+	RETURNVALIFFALSE(__buffer, false, "allocate __socket");
+
 	int ret = __socket->Init();
 	if (ret)
 	{
@@ -149,7 +156,7 @@ bool rpSelectorClient::processEventSocket(WSAEVENT event)
 		|| NetworkEvents.lNetworkEvents && FD_QOS
 		|| NetworkEvents.lNetworkEvents && FD_GROUP_QOS
 		|| NetworkEvents.lNetworkEvents && FD_ROUTING_INTERFACE_CHANGE
-		|| NetworkEvents.lNetworkEvents && FD_ADDRESS_LIST_CHANGE]
+		|| NetworkEvents.lNetworkEvents && FD_ADDRESS_LIST_CHANGE
 		|| NetworkEvents.lNetworkEvents && FD_CONNECT)
 	{
 		//TODO: implement if required
