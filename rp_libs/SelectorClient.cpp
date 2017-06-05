@@ -27,22 +27,26 @@ bool rpSelectorClient::Init()
 {
 	__socket = new rpTCPClientSocket(__address, __port);
 	RETURNVALIFFALSE(__socket, false, "allocate __socket");
-
-	int ret = __socket->Init();
-	RETURNVALIFFALSE(ret == true, false, "Selector Init");
-
+	RETURNVALIFFALSE(__socket->Init() == true, false, "Selector Init");
+	InitNetworkEvents();
+	RETURNVALIFFALSE(InitEvents() == true, false, "allocate size for buffer");
 	__buffer = new char[__size];
 	RETURNVALIFFALSE(__buffer, false, "allocate size for buffer");
 
+	return true;
+}
+
+bool rpSelectorClient::InitEvents()
+{
 	std::shared_ptr<EventHandler> signalDoneHandler(
 		new EventHandler(WSACreateEvent(), std::bind(&rpSelectorClient::processEventDone, this, std::placeholders::_1)));
 	RETURNVALIFFALSE(signalDoneHandler->Handler(), false, "WSACreateEvent failed");
-	
+
 	std::shared_ptr<EventHandler> signalSocketHandler(
 		new EventHandler(WSACreateEvent(), std::bind(&rpSelectorClient::processEventSocket, this, std::placeholders::_1)));
 	RETURNVALIFFALSE(signalSocketHandler->Handler(), false, "WSACreateEvent failed");
 
-	ret = WSAEventSelect(__socket->Handle(), signalSocketHandler->Handler(), __flags);
+	int ret = WSAEventSelect(__socket->Handle(), signalSocketHandler->Handler(), __flags);
 	NETRETVALIFFALSE(ret != (int)SOCKET_ERROR, false, "WSAEventSelect failed");
 
 	std::shared_ptr<EventHandler> signalWriteHandler(
@@ -60,6 +64,46 @@ bool rpSelectorClient::Init()
 	return true;
 }
 
+void rpSelectorClient::InitNetworkEvents()
+{
+	eventHandlersNet.push_back(std::make_shared<NetworkEventHandler>(
+		FD_READ, FD_READ_BIT, [&]() {
+		int data_read;
+		data_read = recv(__socket->Handle(), __buffer, __size, 0);
+		if (data_read == 0)
+			OnClose();
+		else
+			OnRead(__buffer, data_read);
+	}));
+
+	eventHandlersNet.push_back(std::make_shared<NetworkEventHandler>(
+		FD_CLOSE, FD_CLOSE_BIT, [&]() {
+		closesocket(__socket->Handle());
+	}));
+
+#if 0
+	eventHandlersNet.push_back(std::make_shared<NetworkEventHandler>(
+		FD_WRITE, FD_WRITE_BIT, [&]() {}));
+	eventHandlersNet.push_back(std::make_shared<NetworkEventHandler>(
+		FD_OOB, FD_OOB_BIT, [&]() {}));
+	eventHandlersNet.push_back(std::make_shared<NetworkEventHandler>(
+		FD_ACCEPT, FD_ACCEPT_BIT, [&]() {}));
+	eventHandlersNet.push_back(std::make_shared<NetworkEventHandler>(
+		FD_CONNECT, FD_CONNECT_BIT, [&]() {}));
+	eventHandlersNet.push_back(std::make_shared<NetworkEventHandler>(
+		FD_QOS, FD_QOS_BIT, [&]() {}));
+	eventHandlersNet.push_back(std::make_shared<NetworkEventHandler>(
+		FD_GROUP_QOS, FD_GROUP_QOS_BIT, [&]() {}));
+	eventHandlersNet.push_back(std::make_shared<NetworkEventHandler>(
+		FD_ROUTING_INTERFACE_CHANGE, FD_ROUTING_INTERFACE_CHANGE_BIT,
+		[&]() {}));
+	eventHandlersNet.push_back(std::make_shared<NetworkEventHandler>(
+		FD_ADDRESS_LIST_CHANGE, FD_ADDRESS_LIST_CHANGE_BIT, [&]() {}));
+	eventHandlersNet.push_back(std::make_shared<NetworkEventHandler>(
+		FD_CONNECT, FD_CONNECT_BIT, [&]() {}));
+#endif
+}
+
 void rpSelectorClient::Done()
 {
 	//TODO: weired
@@ -75,25 +119,14 @@ bool rpSelectorClient::Update()
 
 	//while (true)
 	//{
-		Index = WSAWaitForMultipleEvents(events.size(),
-										 &events[0],
-										 false,
-										 WSA_INFINITE,
-										 false);
-
+		Index = WSAWaitForMultipleEvents(events.size(), &events[0], false, WSA_INFINITE, false);
 		WSAEVENT event = events[Index - WSA_WAIT_EVENT_0];
 		for (int i = 0; i < eventHandlers.size(); i++)
-		{
 			if (eventHandlers[i]->CanHandle(event))
-			{
-				eventHandlers[i]->Handle();
-				ret = true;
-				break;
-			}
-		}
+				return eventHandlers[i]->Handle();
 	//}
 
-	return ret;
+	return false;
 }
 
 int rpSelectorClient::Errors()
@@ -104,47 +137,14 @@ int rpSelectorClient::Errors()
 bool rpSelectorClient::processEventSocket(WSAEVENT event)
 {
 	WSANETWORKEVENTS NetworkEvents;
-	int data_read;
-
 	WSAEnumNetworkEvents(__socket->Handle(), event, &NetworkEvents);
-	if (NetworkEvents.lNetworkEvents && FD_READ)
-	{
-		if (NetworkEvents.iErrorCode[FD_READ_BIT] != 0)
+	for (int i = 0; i < eventHandlersNet.size(); i++)
+		if (eventHandlersNet[i]->CanHandle(&NetworkEvents))
 		{
-			printf("FD_READ: failed with error: %d\n",
-				NetworkEvents.iErrorCode[FD_READ_BIT]);
-			return false;
+			eventHandlersNet[i]->Handle();
+			break;
 		}
 
-		data_read = recv(__socket->Handle(), __buffer, __size, 0);
-		if (data_read == 0)
-			OnClose();
-		else
-			OnRead(__buffer, data_read);
-	}
-	else if (NetworkEvents.lNetworkEvents && FD_CLOSE)
-	{
-		if (NetworkEvents.iErrorCode[FD_CLOSE_BIT] != 0)
-		{
-			printf("FD_CLOSE: failed with error: %d\n",
-				NetworkEvents.iErrorCode[FD_CLOSE_BIT]);
-			return false;
-		}
-
-		closesocket(__socket->Handle());
-	}
-	else if (NetworkEvents.lNetworkEvents && FD_WRITE
-		|| NetworkEvents.lNetworkEvents && FD_OOB
-		|| NetworkEvents.lNetworkEvents && FD_ACCEPT
-		|| NetworkEvents.lNetworkEvents && FD_CONNECT
-		|| NetworkEvents.lNetworkEvents && FD_QOS
-		|| NetworkEvents.lNetworkEvents && FD_GROUP_QOS
-		|| NetworkEvents.lNetworkEvents && FD_ROUTING_INTERFACE_CHANGE
-		|| NetworkEvents.lNetworkEvents && FD_ADDRESS_LIST_CHANGE
-		|| NetworkEvents.lNetworkEvents && FD_CONNECT)
-	{
-		//TODO: implement if required
-	}
 	return true;
 }
 
@@ -156,20 +156,35 @@ bool rpSelectorClient::processEventDone(WSAEVENT event)
 
 bool rpSelectorClient::processEventDataToWrite(WSAEVENT event)
 {
-	int ret;
-	int data_write;
+	int dataWrite;
+	OnWrite(__buffer, &dataWrite);
 
-	OnWrite(__buffer, &data_write);
-	//write until there are data left to send
-	ret = send(__socket->Handle(), __buffer, data_write, 0);
-	//if (ret == 0)
-	//	OnClose();
+	int ret = 0;
+	int idx = 0;
+	int dataLeft = dataWrite;
+
+	while (dataLeft > 0)
+	{
+		ret = send(__socket->Handle(), __buffer, dataLeft, 0);
+		if (ret == 0)
+			OnClose();
+		else if (ret == SOCKET_ERROR)
+		{
+			printf("ERROR: failed: %d\n", WSAGetLastError());
+			return false;
+		}
+
+		dataLeft -= ret;
+		idx += ret;
+	}
 
 	return true;
 }
 
 void rpSelectorClient::OnRead(char *buffer, int size)
 {
+	buffer[size - 1] = '\0';
+	printf("OnRead: %s\n", buffer);
 	__inBuf->Add(buffer, size);
 }
 
@@ -180,5 +195,5 @@ void rpSelectorClient::OnWrite(char *buffer, int *size)
 
 void rpSelectorClient::OnClose()
 {
-
+	printf("Close\n");
 }

@@ -3,6 +3,7 @@
 #include "Socket.h"
 #include "Selector.h"
 #include "EventHandler.h"
+#include "NetworkEventHandler.h"
 
 #include <vector>
 #include <string>
@@ -22,18 +23,21 @@ public:
 	virtual bool Update() override;
 	virtual int Errors() override;
 
+
+
+protected:
+	void InitNetworkEvents();
+	bool InitEvents();
+
 	//Correct return value has to be returned to left Update properly
 	bool processEventSocket(WSAEVENT event);
 	bool processEventDone(WSAEVENT event);
 	bool processEventDataToWrite(WSAEVENT event);
 
-protected:
 	virtual void OnRead(char *buffer, int size) override;
 	virtual void OnWrite(char *buffer, int *size) override;
 	virtual void OnClose() override;
-
-
-
+	
 	std::string __address;
 	int __port;
 	rpSocket *__socket;
@@ -41,6 +45,7 @@ protected:
 	std::vector<SOCKET> sockets;
 	std::vector<WSAEVENT> events;
 	std::vector<std::shared_ptr<EventHandler>> eventHandlers;
+	std::vector<std::shared_ptr<NetworkEventHandler>> eventHandlersNet;
 
 	CyclicBuffer *__inBuf;
 	CyclicBuffer *__outBuf;

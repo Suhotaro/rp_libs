@@ -86,6 +86,9 @@
     <ClInclude Include="EventHandler.h">
       <Filter>src\win</Filter>
     </ClInclude>
+    <ClInclude Include="NetworkEventHandler.h">
+      <Filter>src\net</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="ThreadSafeQueue.cpp">
@@ -135,6 +138,9 @@
     </ClCompile>
     <ClCompile Include="EventHandler.cpp">
       <Filter>src\win</Filter>
+    </ClCompile>
+    <ClCompile Include="NetworkEventHandler.cpp">
+      <Filter>src\net</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
