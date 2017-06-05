@@ -9,13 +9,13 @@ rpTCPServerSocket::rpTCPServerSocket(SOCKET socket)
 
 rpTCPClientSocket::rpTCPClientSocket(std::string address, int port,
 									 int af, int type, int protocol)
-	: rpParrent(af, type, protocol), __address(__address), __port(port)
+	: rpParrent(af, type, protocol), __address(address), __port(port)
 {}
 
 bool rpTCPClientSocket::Init()
 {
-	__socket = socket(AF_INET, SOCK_STREAM, IPPROTO_IP);
-	NETRETVALIFFALSE(__socket, false, "create socket");
+	__socket = socket(__af, __type, __protocol);
+	NETRETVALIFFALSE(__socket != INVALID_SOCKET, false, "create socket");
 
 	struct sockaddr_in server;
 	memset(&server, 0, sizeof(struct sockaddr_in));

@@ -2,13 +2,15 @@
 
 #include "Socket.h"
 #include "Selector.h"
+#include "EventHandler.h"
 
 #include <vector>
 #include <string>
+#include <memory>
 
 class CyclicBuffer;
 
-class rpSelectorClient : public rpSelector
+class RP_LIBS_API rpSelectorClient : public rpSelector
 {
 	typedef rpSelector eInherited;
 public:
@@ -20,28 +22,28 @@ public:
 	virtual bool Update() override;
 	virtual int Errors() override;
 
-protected:
-	virtual void OnRead(char *buffer, int size) override;
-	virtual void OnWrite(char *buffer, int *size) override;
-	virtual void OnClose() override;
-
 	//Correct return value has to be returned to left Update properly
 	bool processEventSocket(WSAEVENT event);
 	bool processEventDone(WSAEVENT event);
 	bool processEventDataToWrite(WSAEVENT event);
 
+protected:
+	virtual void OnRead(char *buffer, int size) override;
+	virtual void OnWrite(char *buffer, int *size) override;
+	virtual void OnClose() override;
+
+
+
 	std::string __address;
 	int __port;
 	rpSocket *__socket;
 
-	HANDLE __signalSocket;
-	HANDLE __signalDone;
+	std::vector<SOCKET> sockets;
+	std::vector<WSAEVENT> events;
+	std::vector<std::shared_ptr<EventHandler>> eventHandlers;
 
 	CyclicBuffer *__inBuf;
 	CyclicBuffer *__outBuf;
-
-	std::vector<SOCKET> sockets;
-	std::vector<WSAEVENT> events;
 
 	char *__buffer;
 	int __size;

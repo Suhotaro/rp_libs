@@ -1,9 +1,10 @@
 #pragma once
 
+#include "rp_libs.h"
 #include "stdafx.h"
 #include <string>
 
-class CyclicBuffer
+class RP_LIBS_API CyclicBuffer
 {
 public:
 	CyclicBuffer();
@@ -12,7 +13,10 @@ public:
 	void Add(char *buffer, int size);
 	void Pop(char *buffer, int*size, int maxBufferSize);
 
-	const HANDLE& Signal();
+	std::string Read();
+	void Write(std::string str);
+
+	const HANDLE Signal();
 private:
 	HANDLE __signal;
 	std::string __buffer;

@@ -24,6 +24,9 @@
     <Filter Include="src\util">
       <UniqueIdentifier>{97633fc7-3687-49ad-b694-97d9e32f9731}</UniqueIdentifier>
     </Filter>
+    <Filter Include="src\win">
+      <UniqueIdentifier>{13af328f-9b46-4333-acc2-5ea3aee820c1}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="stdafx.h">
@@ -77,6 +80,12 @@
     <ClInclude Include="SelectorClient.h">
       <Filter>src\net</Filter>
     </ClInclude>
+    <ClInclude Include="LibInit.h">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="EventHandler.h">
+      <Filter>src\win</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="ThreadSafeQueue.cpp">
@@ -120,6 +129,12 @@
     </ClCompile>
     <ClCompile Include="SelectorClient.cpp">
       <Filter>src\net</Filter>
+    </ClCompile>
+    <ClCompile Include="LibInit.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="EventHandler.cpp">
+      <Filter>src\win</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

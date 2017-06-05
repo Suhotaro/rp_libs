@@ -5,6 +5,7 @@
 #include "CyclicBuffer.h"
 #include "SocketTCP.h"
 
+#include <functional>
 #include <stdio.h>
 
 #define BUFF_SIZE 4096
@@ -17,58 +18,63 @@ __inBuf(inBuf),
 __outBuf(outBuf),
 __flags(flags),
 __size(BUFF_SIZE)
-{
-
-}
+{}
 
 rpSelectorClient::~rpSelectorClient()
-{
-	WSACloseEvent(__signalDone);
-	WSACloseEvent(__signalSocket);
-}
+{}
 
 bool rpSelectorClient::Init()
 {
 	__socket = new rpTCPClientSocket(__address, __port);
-	RETURNVALIFFALSE(__buffer, false, "allocate __socket");
+	RETURNVALIFFALSE(__socket, false, "allocate __socket");
 
 	int ret = __socket->Init();
-	if (ret)
-	{
-		printf("ERROR: Selector Init\n");
-		return false;
-	}
+	RETURNVALIFFALSE(ret == true, false, "Selector Init");
 
 	__buffer = new char[__size];
 	RETURNVALIFFALSE(__buffer, false, "allocate size for buffer");
 
-	__signalDone = WSACreateEvent();
-	RETURNVALIFFALSE(__signalDone, false, "WSACreateEvent failed");
+	std::shared_ptr<EventHandler> signalDoneHandler(
+		new EventHandler(WSACreateEvent(), std::bind(&rpSelectorClient::processEventDone, this, std::placeholders::_1)));
+	RETURNVALIFFALSE(signalDoneHandler->Handler(), false, "WSACreateEvent failed");
+	
+	std::shared_ptr<EventHandler> signalSocketHandler(
+		new EventHandler(WSACreateEvent(), std::bind(&rpSelectorClient::processEventSocket, this, std::placeholders::_1)));
+	RETURNVALIFFALSE(signalSocketHandler->Handler(), false, "WSACreateEvent failed");
 
-	__signalSocket = WSACreateEvent();
-	RETURNVALIFFALSE(__signalSocket, false, "WSACreateEvent failed");
+	ret = WSAEventSelect(__socket->Handle(), signalSocketHandler->Handler(), __flags);
+	NETRETVALIFFALSE(ret != (int)SOCKET_ERROR, false, "WSAEventSelect failed");
 
-	ret = WSAEventSelect(__socket->Handle(), __signalSocket, __flags);
-	NETRETVALIFFALSE(ret != (int)SOCKET_ERROR, "WSAEventSelect failed");
+	std::shared_ptr<EventHandler> signalWriteHandler(
+		new EventHandler(__outBuf->Signal(), std::bind(&rpSelectorClient::processEventDataToWrite, this, std::placeholders::_1)));
 
-	events.push_back(__signalSocket);
-	events.push_back(__signalDone);
-	events.push_back(__outBuf->Signal());
+	events.push_back(signalDoneHandler->Handler());
+	eventHandlers.push_back(std::move(signalDoneHandler));
+
+	events.push_back(signalSocketHandler->Handler());
+	eventHandlers.push_back(std::move(signalSocketHandler));
+
+	events.push_back(signalWriteHandler->Handler());
+	eventHandlers.push_back(std::move(signalWriteHandler));
 
 	return true;
 }
 
 void rpSelectorClient::Done()
 {
-	WSASetEvent(__signalDone);
+	//TODO: weired
+	WSASetEvent(events[0]);
 }
 
 bool rpSelectorClient::Update()
 {
 	DWORD Index;
+	bool ret = false;
 
-	while (true)
-	{
+	printf("Client: Update\n");
+
+	//while (true)
+	//{
 		Index = WSAWaitForMultipleEvents(events.size(),
 										 &events[0],
 										 false,
@@ -76,40 +82,18 @@ bool rpSelectorClient::Update()
 										 false);
 
 		WSAEVENT event = events[Index - WSA_WAIT_EVENT_0];
-		if (event == __signalSocket)
+		for (int i = 0; i < eventHandlers.size(); i++)
 		{
-			if (false == processEventSocket(event))
+			if (eventHandlers[i]->CanHandle(event))
 			{
-				printf("ERROR: process SIGNAL signal\n");
-				return false;
+				eventHandlers[i]->Handle();
+				ret = true;
+				break;
 			}
 		}
-		else if (event == __signalDone)
-		{
-			if (false == processEventDone(event))
-			{
-				printf("ERROR: process DONE signal\n");
-				return false;
-			}
-		}
-		else if (event == __outBuf->Signal())
-		{
-			if (false == processEventDataToWrite(event))
-			{
-				printf("ERROR: process DATA_TO_WRITE signal\n");
-				return false;
-			}
-		}
-		else
-		{
-			printf("ERROR: unknown event\n");
-			return false;
-		}
+	//}
 
-		WSAResetEvent(event);
-	}
-
-	return true;
+	return ret;
 }
 
 int rpSelectorClient::Errors()
@@ -138,7 +122,7 @@ bool rpSelectorClient::processEventSocket(WSAEVENT event)
 		else
 			OnRead(__buffer, data_read);
 	}
-	if (NetworkEvents.lNetworkEvents && FD_CLOSE)
+	else if (NetworkEvents.lNetworkEvents && FD_CLOSE)
 	{
 		if (NetworkEvents.iErrorCode[FD_CLOSE_BIT] != 0)
 		{
@@ -149,7 +133,7 @@ bool rpSelectorClient::processEventSocket(WSAEVENT event)
 
 		closesocket(__socket->Handle());
 	}
-	if (NetworkEvents.lNetworkEvents && FD_WRITE
+	else if (NetworkEvents.lNetworkEvents && FD_WRITE
 		|| NetworkEvents.lNetworkEvents && FD_OOB
 		|| NetworkEvents.lNetworkEvents && FD_ACCEPT
 		|| NetworkEvents.lNetworkEvents && FD_CONNECT

@@ -38,7 +38,20 @@ void CyclicBuffer::Pop(char *buffer, int *size, int maxBufferSize)
 	}
 }
 
-const HANDLE& CyclicBuffer::Signal()
+std::string CyclicBuffer::Read()
+{
+	return __buffer;
+}
+
+void CyclicBuffer::Write(std::string str)
+{
+	__buffer += str;
+	WSASetEvent(__signal);
+}
+
+
+
+const HANDLE CyclicBuffer::Signal()
 {
 	return __signal;
 }

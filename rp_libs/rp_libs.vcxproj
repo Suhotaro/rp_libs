@@ -150,6 +150,8 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="CyclicBuffer.h" />
+    <ClInclude Include="EventHandler.h" />
+    <ClInclude Include="LibInit.h" />
     <ClInclude Include="Msg.h" />
     <ClInclude Include="NetUtil.h" />
     <ClInclude Include="rp_libs.h" />
@@ -183,6 +185,8 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
       </PrecompiledHeader>
     </ClCompile>
+    <ClCompile Include="EventHandler.cpp" />
+    <ClCompile Include="LibInit.cpp" />
     <ClCompile Include="rp_libs.cpp" />
     <ClCompile Include="Selector.cpp" />
     <ClCompile Include="SelectorClient.cpp" />
